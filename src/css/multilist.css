@@ -1,0 +1,17 @@
+.list-left li, .list-right li {
+    cursor: pointer;
+}
+
+/*
+.dual-list .list-group {
+    margin-top: 8px;
+}
+
+.list-arrows button {
+    margin-bottom: 20px;
+}
+            
+.left-check-col {
+    padding-left: 0px;
+}
+*/
