@@ -20,51 +20,62 @@ const BORDER_COLORS = ['rgba(255, 99, 132, 1)',
 'rgba(255, 159, 64, 1)']
 
 var charts = [];
-var chart_react_list = []; 
+var chart_react_list = undefined; 
+var inf = [];
 
 function Chart_React( props ){
     return (
-        <div className={props.size}>
+        <div className={props.options.size}>
             <div className="card text-center">
-                {/* <div className="well card-header">
-                    {props.header}
-                </div> */}
+                 <div className="well card-header">
+                    {props.options.header}
+                </div> 
                 <div className="card-body">
                     <div className="chart-container" >
                         <canvas  id={props.ID}></canvas>
                     </div> 
                 </div>
-                
+                {/* <div className="well card-footer">
+                    {props.header}
+                </div> 
+                 */}
             </div>   
         </div>
     );
 }
 
 
+
 class Chart_React_List extends Component{
 
-
+    
     constructor(props) {
         super(props);
         this.listitems = [];
-        for( var i =0; i < this.props.info.length; i++ )
+        for( var i =0; i < this.props.info.length; i++ ){
             this.listitems.push([i, this.props.info[i].options ]);
-        
+        }
+
         this.state = {
             listitems: this.listitems
           };
-          console.log(this.state.listitems);
-        //this.plot_charts = this.plot_charts.bind(this);
+        
+        //this.onResetArray.bind(this);
+    }
+
+
+    onResetArray = () => {
+        this.setState({ listitems: inf });
     }
 
     render() {
         return (
-            <div>
+            <div id ="inputClick" onClick={this.onResetArray}>
+                
                 {
                     this.state.listitems.map(listitem => (
-                        
-                        <Chart_React  ID ={'c' + listitem[0]}
-                        key={listitem} size={'col-md-'+listitem[1].size}/>
+                    <Chart_React  ID ={'c' + listitem[0]}
+                    key={'c' + listitem[0]} options={listitem[1]}/>
                 ))}
 
             </div>
@@ -72,15 +83,28 @@ class Chart_React_List extends Component{
     }
 }
 
+
+
+
 export function plot_list( info_list ){
+
 
     for( var i = 0; i < charts.length; i++ )
         charts[i].destroy();
     charts = [];
+    inf = []
+    for( var i =0; i < info_list.length; i++ )
+        inf.push([i, info_list[i].options ]);
 
-   
-    chart_react_list = <Chart_React_List  info = {info_list} />;
-    ReactDOM.render(chart_react_list, document.getElementById('chart-list'));
+    if( chart_react_list == undefined ){
+        chart_react_list = <Chart_React_List  info = {info_list} />;
+        ReactDOM.render(chart_react_list, document.getElementById('chart-list'));
+    }else{
+        //chart_react_list.type.prototype.update();
+        var el = document.getElementById('inputClick').click();
+        //chart_react_list.update_state(info_list);
+    }
+    
 
     for( var i = 0; i < info_list.length; i++ ){
         plot( info_list[i], i );

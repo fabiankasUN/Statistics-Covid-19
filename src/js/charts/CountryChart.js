@@ -20,7 +20,7 @@ export class CountryChart extends GenericChart{
           return y_axis;
     }
 
-    getData( type, x_label, y_label, size ){
+    getData( type, x_label, y_label, size, header ){
 
         var x_axis = [];
         var y_axis = [];
@@ -31,7 +31,7 @@ export class CountryChart extends GenericChart{
         var labels = ['Casos activos','Muertes','Recuperados'];
 
 
-        return new InfoChart( x_axis, y_axis, labels, type, new OptionsChart(x_label, y_label, size))
+        return new InfoChart( x_axis, y_axis, labels, type, new OptionsChart(x_label, y_label, size, header))
         //return [x_axis, y_axis, labels, type];
     }
 

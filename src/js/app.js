@@ -8,7 +8,9 @@ import './bussiness/World.js';
 
 import { World } from './bussiness/World.js';
 import { GenericChart } from './charts/GenericChart.js';
-import { CountryChart } from './charts/CountryChart';
+import { CountryChart } from './charts/CountryChart.js';
+import { DiffChart } from './charts/DiffChart.js';
+import { ComparatorChart } from './charts/ComparatorChart';
 
 const URL_CONFIRMED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
 const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
@@ -22,6 +24,8 @@ var right_list = document.getElementById('dual-list-left');
 
 window.onload=function() {
   load_csv();
+
+
 } 
 
 
@@ -41,25 +45,43 @@ function load_csv(){
 
 function update_plot(){
 
+  if(right_list.childNodes.length === 0)
+    return;
+    
   var countries = []
   for( var i = 1; i < right_list.childNodes.length; i++ ){
     var value = right_list.childNodes[i].value;
     countries.push(logic.countries[value]);
   }
   
+   
+
   var info_list = [];
 
   //var g1 = plot_lines(countries);
-  var g1 = new GenericChart( countries ).getData('line', 'Fecha por dia', '# casos', 6);
-  var g2 = new GenericChart( countries ).getData('bar','Fecha por dia', '# casos', 6);
-  var g3 = new CountryChart( countries, countries[0] ).getData('line', 'Fecha por dia', '# casos ' + countries[0].name, 6);
-  
-  //var g3 = new GenericChart( countries ).plot('bar');
-  info_list.push(g1,g2,g3);
+  var g1 = new GenericChart( countries ).getData('line', 'Fecha por dia', '# casos', 'col-md-6'
+  , 'Cantidad de casos confirmados desde el primer dia de aparición en los paises');
+  var g2 = new GenericChart( countries ).getData('bar','Fecha por dia', '# casos', 'col-md-6'
+  ,'Cantidad de casos confirmados desde el primer dia de aparición en los paises');
+  var g3 = new DiffChart(countries ).getData('bar', 'Fecha por dia', 'Porcentaje de crecimiento ', 'col-md-6'
+  , 'Porcentaje de crecimiento de casos confirmados respecto del día anterior');
+  var g4 = new ComparatorChart( countries).getData('line','Fecha por dia', '# casos ', 'col-md-6'
+  ,'Comparativo de paises asumiendo el día 0 cuando superaron los 50 casos ');
+
+  //var cases = new CountryChart( countries, countries[0] ).getData('line', 'Fecha por dia', '# casos ' + countries[0].name, 6);
+
+  info_list.push(g1);
+  info_list.push(g2);
+  info_list.push(g3);
+  info_list.push(g4);
+
+
+  for( var  i =0; i < countries.length; i++ ){
+    info_list.push(new CountryChart( countries, countries[i] ).getData('line', 'Fecha por dia', '# casos ' + countries[i].name, 'col-md-6'
+    , 'Cantidad de casos confirmados, muertes y recuperados ' + countries[i].name));
+  }
 
   //for( var i = 0; i < countries.length; i++ ){
-
-
   chart.plot_list(info_list);
 
 
@@ -107,6 +129,8 @@ $(function () {
   $('body').on('click', '.dual-list-move-right', function (e) {
       e.preventDefault();
 
+      
+
       var actives = $(this).parent();
       $(this).parent().find("span").remove();
       $(move_left).clone().appendTo(actives);
@@ -124,6 +148,9 @@ $(function () {
   $('body').on('click', '.dual-list-move-left', function (e) {
       e.preventDefault();
 
+      if(right_list.childNodes.length >= 6)
+        return;
+        
       var actives = $(this).parent();
       $(this).parent().find("span").remove();
       $(move_right).clone().appendTo(actives);

@@ -1,10 +1,11 @@
 
 export class OptionsChart{
 
-    constructor( x_label, y_label, size){
+    constructor( x_label, y_label, size, header){
         this.x_label = x_label;
         this.y_label = y_label;
         this.size = size;
+        this.header = header;
     }
 }
 
@@ -57,7 +58,7 @@ export class GenericChart{
           return y;
     }
 
-    getData( type, x_label, y_label, size ){
+    getData( type, x_label, y_label, size, header ){
   
         var x_axis = [];
         var y_axis = [];
@@ -72,7 +73,7 @@ export class GenericChart{
           y_axis.push(y);
         }
 
-        return new InfoChart(x_axis, y_axis, labels, type, new OptionsChart(x_label, y_label, size))
+        return new InfoChart(x_axis, y_axis, labels, type, new OptionsChart(x_label, y_label, size, header))
 
         //return [x_axis, y_axis, labels, type];
       }
