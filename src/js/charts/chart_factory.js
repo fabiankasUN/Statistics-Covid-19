@@ -129,7 +129,7 @@ function plot( info, index ){
         datasets.push(cur);
     }
 
-    var ctx = document.getElementById('c' +index).getContext("2d");;
+    var ctx = document.getElementById('c' +index).getContext("2d");
     var myChart = new Chart(ctx, {
         type: chart_type,
         data: {
@@ -164,5 +164,7 @@ function plot( info, index ){
 
         }
     });
+
+    myChart.aspectRatio = 0;
     charts.push(myChart);
 }

@@ -16,7 +16,11 @@ export class DiffChart extends GenericChart{
             var diff = country.cases[j].value - last; 
             var p = diff * 100.0/country.cases[j].value;
             last =  country.cases[j].value;
-            y.push(p); 
+            if( this.start_day != j){
+                y.push(p); 
+            }else{
+                y.push(0); 
+            }
         }
         return y;
     }
@@ -28,7 +32,6 @@ export class DiffChart extends GenericChart{
         var labels = [];
 
         x_axis = this.getXaxis();
-        
 
         for( var i =0; i < this.countries.length; i++ ){
             let country = this.countries[i];
