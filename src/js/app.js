@@ -1,158 +1,67 @@
 import _ from 'lodash';
 import '../../node_modules/chartist/dist/chartist.min.css';
 
-import '../css/multilist.css';
-import * as chart from './chart.js';
+import * as chart from './charts/chart_factory.js';
 import * as d3 from '../../node_modules/d3-fetch/dist/d3-fetch.min.js';
-import './bussiness/Plot.js';
-import { Plot } from './bussiness/Plot.js';
+import './bussiness/World.js';
 
+
+import { World } from './bussiness/World.js';
+import { GenericChart } from './charts/GenericChart.js';
+import { CountryChart } from './charts/CountryChart';
+
+const URL_CONFIRMED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
+const URL_RECOVERED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
 
 var logic;
-
 var left_list = document.getElementById('dual-list-right');
-
 var right_list = document.getElementById('dual-list-left');
+
 
 
 window.onload=function() {
   load_csv();
 } 
 
+
 function load_csv(){
 
-  d3.csv("/src/data/time_series_19-covid-Confirmed.csv").then(function(data) {
-    logic = new Plot(data);
+  Promise.all([
+    d3.csv(URL_CONFIRMED_CASES),
+    d3.csv(URL_DEATHS_CASES),
+    d3.csv(URL_RECOVERED_CASES)
+  ]).then(function(files) {
+    logic = new World(files[0], files[1], files[2]);
     load_list(logic.countries);
-  });
+  }).catch(function(err) {
+  })
 }
-
-
-function plot_lines(lines){
-  
-  var x_axis = [];
-  var y_axis = [];
-  var labels = [];
-
-  var init = 100000;
-  for( var i =0; i < lines.length; i++ ){
-    let country = logic.countries[lines[i]];
-    for( var j =0; j < country.cases.length; j++ ){
-      if(country.cases[j].value > 0){
-        init = Math.min(init, j);
-      }
-    }
-  }
-
-
-  for( var i =init; i < logic.countries[0].cases.length; i++ ){
-      x_axis.push(logic.countries[0].cases[i].date.getDate());
-    
-  }
-  //logic.countries[0].cases.foreach( element => { x_axis.push(element.date.getDate()); });
-  for( var i =0; i < lines.length; i++ ){
-    let country = logic.countries[lines[i]];
-    labels.push(country.name + ' ' + country.province);
-    var y = [];
-    for( var j =init; j < country.cases.length; j++ ){
-        y.push(country.cases[j].value); 
-    }
-    y_axis.push(y);
-  }
-
-  chart.linear_chartjs( x_axis, y_axis, labels);
-  //chart.linear_chart( x_axis, y_axis, 1000,600);
-}
-
-function plot_bars(lines){
-  var x_axis = [];
-  var y_axis = [];
-  var labels = [];
-
-  var init = 100000;
-  for( var i =0; i < lines.length; i++ ){
-    let country = logic.countries[lines[i]];
-    for( var j =0; j < country.cases.length; j++ ){
-      if(country.cases[j].value > 0){
-        init = Math.min(init, j);
-      }
-    }
-  }
-
-  for( var i =init; i < logic.countries[0].cases.length; i++ ){
-      x_axis.push(logic.countries[lines[0]].cases[i].date.getDate());
-  }
-  //logic.countries[0].cases.foreach( element => { x_axis.push(element.date.getDate()); });
-  for( var i =0; i < lines.length; i++ ){
-    let country = logic.countries[lines[i]];
-    labels.push(country.name + ' ' + country.province);
-    var y = [];
-    var last = 0;
-    for( var j =init; j < country.cases.length; j++ ){
-      //if(country.cases[j].value > 0){
-        y.push(country.cases[j].value);
-        last = country.cases[j].value 
-      //}
-    }
-    y_axis.push(y);
-  }
-
-  //chart.bar_chart( x_axis, y_axis );
-  chart.bar_chartjs(x_axis, y_axis, labels);
-}   
-
-function plot_bars2(lines){
-  var x_axis = [];
-  var y_axis = [];
-  var labels = [];
-
-  var init = 100000;
-  for( var i =0; i < lines.length; i++ ){
-    let country = logic.countries[lines[i]];
-    for( var j =0; j < country.cases.length; j++ ){
-      if(country.cases[j].value > 0){
-        init = Math.min(init, j);
-      }
-    }
-  }
-  console.log(init);
-
-  for( var i =init; i < logic.countries[0].cases.length; i++ ){
-      x_axis.push(logic.countries[lines[0]].cases[i].date.getDate());
-  }
-  //logic.countries[0].cases.foreach( element => { x_axis.push(element.date.getDate()); });
-  for( var i =0; i < lines.length; i++ ){
-    let country = logic.countries[lines[i]];
-    labels.push(country.name + ' ' + country.province);
-    var y = [];
-    var last = 0;
-    for( var j =init; j < country.cases.length; j++ ){
-      //if(country.cases[j].value > 0){
-        var diff = country.cases[j].value - last;
-        y.push(diff*100/last);
-        last = country.cases[j].value 
-      //}
-    }
-    y_axis.push(y);
-  }
-
-  //chart.bar_chart( x_axis, y_axis );
-  chart.bar_chartjs2(x_axis, y_axis, labels);
-}   
-
 
 
 function update_plot(){
 
-  var lines = []
+  var countries = []
   for( var i = 1; i < right_list.childNodes.length; i++ ){
     var value = right_list.childNodes[i].value;
-    lines.push(value);
+    countries.push(logic.countries[value]);
   }
+  
+  var info_list = [];
 
-  plot_lines(lines);
-  plot_bars(lines);
-  plot_bars2(lines);
+  //var g1 = plot_lines(countries);
+  var g1 = new GenericChart( countries ).getData('line', 'Fecha por dia', '# casos', 6);
+  var g2 = new GenericChart( countries ).getData('bar','Fecha por dia', '# casos', 6);
+  var g3 = new CountryChart( countries, countries[0] ).getData('line', 'Fecha por dia', '# casos ' + countries[0].name, 6);
+  
+  //var g3 = new GenericChart( countries ).plot('bar');
+  info_list.push(g1,g2,g3);
+
+  //for( var i = 0; i < countries.length; i++ ){
+
+
+  chart.plot_list(info_list);
+
 
 }
 
@@ -169,16 +78,11 @@ function load_list(countries){
     span.classList.add("glyphicon-plus");
     span.classList.add("pull-right");
     span.classList.add("dual-list-move-left");
-    
 
     li.appendChild(document.createTextNode(element.name + " " + element.province));
     li.appendChild(span);
     left_list.appendChild(li);
-
-    //select.options[select.options.length] = new Option(element, index++);
   });
-
-
 }
 
 

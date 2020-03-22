@@ -6,11 +6,21 @@ export class Country {
       this.lat = lat;
       this.lon = lon;
       this.cases = [];
+      this.deaths = [];
+      this.recovered = [];
     };
 
-    addCase( date, value ){
+    add_case( date, value ){
         this.cases.push(new Case(date, value));
     }
+
+    add_death( date, value){
+        this.deaths.push(new Case(date, value));
+    }
+
+    add_recovered( date, value){
+        this.recovered.push(new Case(date, value));
+    } 
 }
 
 export class Case{
