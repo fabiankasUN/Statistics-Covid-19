@@ -26,15 +26,11 @@ var inf = [];
 function Chart_React( props ){
     return (
         <div className={props.options.size}>
-            <div className="panel panel-info">
-                {/* <div class="panel-heading" align="center">{props.options.header}</div> */}
-                  
-                <div className="panel-body">
-                    <div className="chart-container" >
+            { 
+                    <div className="chart-container" style={{position: "relative", minHeight:300 }} >
                         <canvas  id={props.ID}></canvas>
-                    </div> 
-                </div>
-            </div>   
+                 
+            </div>    }
         </div>
     );
 }
@@ -127,11 +123,13 @@ function plot( info, index ){
     var ctx = document.getElementById('c' +index).getContext("2d");
     var myChart = new Chart(ctx, {
         type: chart_type,
+        
         data: {
             labels: x_axis,
             datasets: datasets
         },
         options: {
+            responsive: true,
             scales: {
                 yAxes: [{
                     ticks: {

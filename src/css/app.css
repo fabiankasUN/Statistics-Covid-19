@@ -1,7 +1,11 @@
 .list-left li, .list-right li {
     cursor: pointer;
 }
-
+@media only screen and (max-width: 1026px) {
+    #rpanel {
+        display: none;
+    }
+}
 /*
 .dual-list .list-group {
     margin-top: 8px;

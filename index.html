@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./favicon.ico">
-
+    
 </head>
 <body>
 
@@ -21,6 +21,7 @@
            
           </div>
         <hr/> -->
+        
         <div class="row ">
             <div class="dual-list list-right col-md-6">
                 <div class="well">
@@ -37,6 +38,7 @@
                     
                     <ul class="list-group" id="dual-list-right" style="height: 200px; overflow: auto">
                     </ul>
+
                 </div>
             </div>
     
@@ -51,6 +53,7 @@
                                 <!-- <span class="input-group-addon glyphicon glyphicon-unchecked selector" style="cursor: pointer; top: 0px;" title="Select All"></span> -->
                                 <span class="input-group-addon glyphicon glyphicon-minus move-right" style="cursor: pointer; top: 0px;" title="Remove Selected"></span>
                             </div>
+
                         </div>
                     </div>
                     
@@ -112,11 +115,15 @@
         </div>
 
 
-
-          <br/>
-
-
-         
+        <div class="panel panel-info" id="rpanel">
+            <div class="panel-heading">Settings</div>
+            <div class="panel-body">
+                <p>Plot size</p>
+                <label class="radio-inline" id="r4"><input type="radio" name="optradio" > 4</label>
+                <label class="radio-inline" id="r6"><input type="radio" name="optradio"  > 6</label>
+                <label class="radio-inline" id="r12" ><input type="radio" name="optradio"  checked> 12</label>
+            </div>
+          </div>
 
           <div id ="chart-list" >
 
@@ -137,7 +144,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <p style="font-size:16px;">
-                            keep up-to-date about the # cases worldwide!
+                            keep up-to-date with the cases worldwide!
                           </p>
                           <h3>GitHub <a href="https://github.com/fabiankasUN/Statistics-Covid-19">here</a> </h3> 
                           
@@ -160,8 +167,9 @@
 
 
     
+
     <script src="/dist/bundle.js" > </script>
 
-</footer>
+</footer>   
 
 </html>
