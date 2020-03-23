@@ -59,13 +59,13 @@ function update_plot(){
   var info_list = [];
 
   //var g1 = plot_lines(countries);
-  var g1 = new GenericChart( countries ).getData('line', 'Fecha por dia', '# casos', 'col-md-6'
+  var g1 = new GenericChart( countries ).getData('line', 'Fecha por dia', '# casos', 'col-md-12'
   , 'Cantidad de casos confirmados desde el primer dia de aparición en los paises');
-  var g2 = new GenericChart( countries ).getData('bar','Fecha por dia', '# casos', 'col-md-6'
+  var g2 = new GenericChart( countries ).getData('bar','Fecha por dia', '# casos', 'col-md-12'
   ,'Cantidad de casos confirmados desde el primer dia de aparición en los paises');
-  var g3 = new DiffChart(countries ).getData('bar', 'Fecha por dia', 'Porcentaje de crecimiento ', 'col-md-6'
+  var g3 = new DiffChart(countries ).getData('bar', 'Fecha por dia', 'Porcentaje de crecimiento ', 'col-md-12'
   , 'Porcentaje de crecimiento de casos confirmados respecto del día anterior');
-  var g4 = new ComparatorChart( countries).getData('line','Fecha por dia', '# casos ', 'col-md-6'
+  var g4 = new ComparatorChart( countries).getData('line','Fecha por dia', '# casos ', 'col-md-12'
   ,'Comparativo de paises asumiendo el día 0 cuando superaron los 50 casos ');
 
   //var cases = new CountryChart( countries, countries[0] ).getData('line', 'Fecha por dia', '# casos ' + countries[0].name, 6);
@@ -77,7 +77,7 @@ function update_plot(){
 
 
   for( var  i =0; i < countries.length; i++ ){
-    info_list.push(new CountryChart( countries, countries[i] ).getData('line', 'Fecha por dia', '# casos ' + countries[i].name, 'col-md-6'
+    info_list.push(new CountryChart( countries, countries[i] ).getData('line', 'Fecha por dia', '# casos ' + countries[i].name, 'col-md-12'
     , 'Cantidad de casos confirmados, muertes y recuperados ' + countries[i].name));
   }
 
@@ -123,16 +123,40 @@ $(function () {
   
   $('body').on('click', '.list-group .list-group-item', function () {
       $(this).toggleClass('active');
+
+      if( this.offsetParent !== null ){
+        var type = this.offsetParent.className;
+        if( type === "dual-list list-right col-md-6"){
+          moveToRight(this);
+        }else{
+          moveToLeft(this);
+        }
+      }
+
+
   });
   
-  
-  $('body').on('click', '.dual-list-move-right', function (e) {
-      e.preventDefault();
 
-      
+  function moveToRight( t ){
+      if(right_list.childNodes.length >= 6)
+         return;
+      t = t.childNodes[1];
+      var actives = $(t).parent();
+      $(t).parent().find("span").remove();
+      $(move_right).clone().appendTo(actives);
+      actives.clone().appendTo('.list-left ul').removeClass("active");
+      actives.remove();
 
-      var actives = $(this).parent();
-      $(this).parent().find("span").remove();
+
+      update_plot();
+
+      updateSelectedOptions();
+  }
+
+  function moveToLeft( t ){
+      t = t.childNodes[1];
+      var actives = $(t).parent();
+      $(t).parent().find("span").remove();
       $(move_left).clone().appendTo(actives);
       actives.clone().appendTo('.list-right ul').removeClass("active");
       actives.remove();
@@ -142,25 +166,43 @@ $(function () {
 
       
       updateSelectedOptions();
+  }
+  
+  $('body').on('click', '.dual-list-move-right', function (e) {
+      e.preventDefault();
+
+      
+
+      // var actives = $(this).parent();
+      // $(this).parent().find("span").remove();
+      // $(move_left).clone().appendTo(actives);
+      // actives.clone().appendTo('.list-right ul').removeClass("active");
+      // actives.remove();
+      // sortUnorderedList("dual-list-right");
+      
+      // update_plot();
+
+      
+      // updateSelectedOptions();
   });
   
   
   $('body').on('click', '.dual-list-move-left', function (e) {
       e.preventDefault();
 
-      if(right_list.childNodes.length >= 6)
-        return;
+      // if(right_list.childNodes.length >= 6)
+      //    return;
         
-      var actives = $(this).parent();
-      $(this).parent().find("span").remove();
-      $(move_right).clone().appendTo(actives);
-      actives.clone().appendTo('.list-left ul').removeClass("active");
-      actives.remove();
+      // var actives = $(this).parent();
+      // $(this).parent().find("span").remove();
+      // $(move_right).clone().appendTo(actives);
+      // actives.clone().appendTo('.list-left ul').removeClass("active");
+      // actives.remove();
 
 
-      update_plot();
+      // update_plot();
 
-      updateSelectedOptions();
+      // updateSelectedOptions();
   });
   
   

@@ -26,19 +26,14 @@ var inf = [];
 function Chart_React( props ){
     return (
         <div className={props.options.size}>
-            <div className="card text-center">
-                 <div className="well card-header">
-                    {props.options.header}
-                </div> 
-                <div className="card-body">
+            <div className="panel panel-info">
+                {/* <div class="panel-heading" align="center">{props.options.header}</div> */}
+                  
+                <div className="panel-body">
                     <div className="chart-container" >
                         <canvas  id={props.ID}></canvas>
                     </div> 
                 </div>
-                {/* <div className="well card-footer">
-                    {props.header}
-                </div> 
-                 */}
             </div>   
         </div>
     );
@@ -154,13 +149,11 @@ function plot( info, index ){
                       }
                 }]
             },
-        // legend: {
-        //     display: true,
-        //     position: 'bottom',
-        //     labels: {
-        //         fontColor: "#000080",
-        //     }
-        // }
+            title: {
+                display: true,
+                text: info.options.header
+            }
+                
 
         }
     });
