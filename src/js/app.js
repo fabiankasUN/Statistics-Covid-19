@@ -13,11 +13,16 @@ import { CountryChart } from './charts/CountryChart.js';
 import { DiffChart } from './charts/DiffChart.js';
 import { ComparatorChart } from './charts/ComparatorChart';
 
+//var Highcharts = require('highcharts'); 
+//require('highcharts/modules/exporting')(Highcharts);   
+
+
 const URL_CONFIRMED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
 const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
 const URL_RECOVERED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
-
+const URL_COUNTRIES = "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json";
 var logic;
+var json_countries;
 var left_list = document.getElementById('dual-list-right');
 var right_list = document.getElementById('dual-list-left');
 var size = 12;
@@ -26,17 +31,64 @@ var size = 12;
 window.onload=function() {
   load_csv();
   load_buttons();
+  
 } 
 
+
+function load_map( hot_map ){
+    Highcharts.mapChart('container', {
+
+        title: {
+            text: 'Mapa de calor casos confirmados covid-19'
+        },
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+        },
+
+        colorAxis: {
+            min: 1,
+            max: 100000,
+            type: 'logarithmic',
+            minColor: '#efecf3',
+            maxColor: '#990041',
+            lineWidth: 10
+        },
+
+        series: [{
+            data: hot_map,
+            mapData: Highcharts.maps['custom/world'],
+            joinBy: ['iso-a2', 'code'],
+            name: 'Casos confirmados',
+            borderColor: 'black',
+            borderWidth: 0.5,
+            states: {
+                hover: {
+                    borderWidth: 1
+                }
+            },
+            tooltip: {
+                valueSuffix: ''
+            }
+        }]
+    });
+
+
+}
 
 function load_csv(){
 
   Promise.all([
     d3.csv(URL_CONFIRMED_CASES),
     d3.csv(URL_DEATHS_CASES),
-    d3.csv(URL_RECOVERED_CASES)
+    d3.csv(URL_RECOVERED_CASES),
+    d3.json(URL_COUNTRIES)
   ]).then(function(files) {
-    logic = new World(files[0], files[1], files[2]);
+    logic = new World(files[0], files[1], files[2], files[3]);
+
+    load_map(logic.hot_map);
     load_list(logic.countries);
   }).catch(function(err) {
   })
@@ -128,7 +180,9 @@ function load_list(countries){
 
 
 
-
+/**
+ * Multilist events
+ */
 
 
 $(function () {
@@ -190,39 +244,11 @@ $(function () {
   
   $('body').on('click', '.dual-list-move-right', function (e) {
       e.preventDefault();
-
-      
-
-      // var actives = $(this).parent();
-      // $(this).parent().find("span").remove();
-      // $(move_left).clone().appendTo(actives);
-      // actives.clone().appendTo('.list-right ul').removeClass("active");
-      // actives.remove();
-      // sortUnorderedList("dual-list-right");
-      
-      // update_plot();
-
-      
-      // updateSelectedOptions();
   });
   
   
   $('body').on('click', '.dual-list-move-left', function (e) {
       e.preventDefault();
-
-      // if(right_list.childNodes.length >= 6)
-      //    return;
-        
-      // var actives = $(this).parent();
-      // $(this).parent().find("span").remove();
-      // $(move_right).clone().appendTo(actives);
-      // actives.clone().appendTo('.list-left ul').removeClass("active");
-      // actives.remove();
-
-
-      // update_plot();
-
-      // updateSelectedOptions();
   });
   
   

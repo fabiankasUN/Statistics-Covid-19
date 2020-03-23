@@ -5,7 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./favicon.ico">
-    
+    <style>
+    #container {
+        height: 500px; 
+        min-width: 310px; 
+        max-width: 800px; 
+        margin: 0 auto; 
+    }
+    .loading {
+        margin-top: 10em;
+        text-align: center;
+        color: gray;
+    }
+
+    </style>
 </head>
 <body>
 
@@ -16,6 +29,9 @@
             <!-- <h4 align="center">Best dashboard to compare between countries.</h4> -->
             <h4 align="center">Just choose the countries you want to plot.</h4>
         </div>
+
+
+        
         <!-- <div class="jumbotron">
            
            
@@ -127,10 +143,9 @@
 
           <div id ="chart-list" >
 
-          <br/>
-            
-          
           </div>
+
+          <div id="container" style="width:100%; height:800px;"></div>
 
     </div>
     
@@ -166,7 +181,21 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
 
-    
+    <!-- <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/mapdata/custom/world-robinson-highres.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+<script src="https://code.highcharts.com/mapdata/custom/world.js"></script> -->
+
+
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
+
+
 
     <script src="/dist/bundle.js" > </script>
 
