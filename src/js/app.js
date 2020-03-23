@@ -77,12 +77,14 @@ function update_plot(){
 
   //var g1 = plot_lines(countries);
   var g1 = new GenericChart( countries ).getData('line', 'Fecha por dia', '# casos', 'col-md-' + size
-  , 'Cantidad de casos confirmados desde el primer dia de aparición en los paises');
-  var g2 = new GenericChart( countries ).getData('bar','Fecha por dia', '# casos', 'col-md-' + size
-  ,'Cantidad de casos confirmados desde el primer dia de aparición en los paises');
-  var g3 = new DiffChart(countries ).getData('bar', 'Fecha por dia', 'Porcentaje de crecimiento ', 'col-md-' + size
+  , 'Cantidad de casos confirmados desde el primer dia de aparición en los paises', 'cases');
+  var g2 = new GenericChart( countries ).getData('line','Fecha por dia', '# muertes', 'col-md-' + size
+  ,'Cantidad de muertes desde el primer dia de aparición en los paises', 'deaths');
+  var g3 = new GenericChart( countries ).getData('line','Fecha por dia', '# recuperados', 'col-md-' + size
+  ,'Cantidad de recuperados desde el primer dia de aparición en los paises', 'recovered');
+  var g4 = new DiffChart(countries ).getData('bar', 'Fecha por dia', 'Porcentaje de crecimiento ', 'col-md-' + size
   , 'Porcentaje de crecimiento de casos confirmados respecto del día anterior');
-  var g4 = new ComparatorChart( countries).getData('line','Fecha por dia', '# casos ', 'col-md-' + size
+  var g5 = new ComparatorChart( countries).getData('line','Fecha por dia', '# casos ', 'col-md-' + size
   ,'Comparativo de paises asumiendo el día 0 cuando superaron los 50 casos ');
 
   //var cases = new CountryChart( countries, countries[0] ).getData('line', 'Fecha por dia', '# casos ' + countries[0].name, 6);
@@ -91,7 +93,7 @@ function update_plot(){
   info_list.push(g2);
   info_list.push(g3);
   info_list.push(g4);
-
+  info_list.push(g5);
 
   for( var  i =0; i < countries.length; i++ ){
     info_list.push(new CountryChart( countries, countries[i] ).getData('line', 'Fecha por dia', '# casos ' + countries[i].name, 'col-md-' + size

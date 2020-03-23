@@ -25,6 +25,14 @@ export class DiffChart extends GenericChart{
         return y;
     }
 
+    getXaxis( ){
+        var x_axis = [];
+        for( var i =this.start_day; i < this.countries[0].cases.length; i++ ){
+            x_axis.push( this.countries[0].cases[i].date.getDate() + '/' + (this.countries[0].cases[i].date.getMonth()+1) );
+        }
+        return x_axis;
+    }
+
     getData( type, x_label, y_label, size, header ){
 
         var x_axis = [];

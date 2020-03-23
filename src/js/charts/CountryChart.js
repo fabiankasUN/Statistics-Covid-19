@@ -19,7 +19,7 @@ export class CountryChart extends GenericChart{
           }
           return y_axis;
     }
-
+    
     getData( type, x_label, y_label, size, header ){
 
         var x_axis = [];
