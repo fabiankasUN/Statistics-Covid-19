@@ -2,7 +2,7 @@
 
 keep up to date about the # cases worldwide!
 Compare your state/country and please wash your hands before you use it.
-
+https://infinite-plateau-99199.herokuapp.com/
 
 ## Usage
 
