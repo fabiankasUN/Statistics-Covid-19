@@ -21,6 +21,10 @@ const URL_CONFIRMED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/CO
 const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
 const URL_RECOVERED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
 const URL_COUNTRIES = "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json";
+
+var COL_KEYS = [['co-ca','Cauca'],['co-na','Nariño'],['co-ch','Chocó'],['co-3653','null'],['co-to','Tolima'],['co-cq','Caquetá'],['co-hu','Huila'],['co-pu','Putumayo'],['co-am','Amazonas'],['co-bl','Bolívar'],['co-vc','Valle del Cauca'],['co-su','Sucre'],['co-at','Atlántico'],['co-ce','Cesar'],['co-lg','La Guajira'],['co-ma','Magdalena'],['co-ar','Arauca'],['co-ns','Norte de Santander'],['co-cs','Casanare'],['co-gv','Guaviare'],['co-me','Meta'],['co-vp','Vaupés'],['co-vd','Vichada'],['co-an','Antioquia'],['co-co','Córdoba'],['co-by','Boyacá'],['co-st','Santander'],['co-cl','Caldas'],['co-cu','Cundinamarca'],['co-1136','Bogotá'],['co-ri','Risaralda'],['co-qd','Quindío'],['co-gn','Guainía']];
+
+
 var logic;
 var json_countries;
 var left_list = document.getElementById('dual-list-right');
@@ -28,13 +32,74 @@ var right_list = document.getElementById('dual-list-left');
 var size = 12;
 
 
+
 window.onload=function() {
+  
   load_csv();
   load_buttons();
   
 } 
 
+function load_map_co( col_data ){
 
+  var data = [];
+
+  for( var i = 0; i < COL_KEYS.length; i++ ){
+    var name = COL_KEYS[i][1];
+    var count = 0;
+    for( var j =0; j < col_data.length; j++ ){
+      var dep = col_data[j]['Ciudad de ubicación'];
+      if(dep == name ){
+        console.log(dep + ' ' + name);
+        count += 1
+      }
+    }
+    data.push([COL_KEYS[i][0],count]);
+  }
+
+  console.log('data ' + data);
+
+  Highcharts.mapChart('container2', {
+    chart: {
+        map: 'countries/co/co-all'
+    },
+
+    title: {
+        text: 'Highmaps basic demo'
+    },
+
+    subtitle: {
+        text: 'Source map: <a href="http://code.highcharts.com/mapdata/countries/co/co-all.js">Colombia</a>'
+    },
+
+    mapNavigation: {
+        enabled: true,
+        buttonOptions: {
+            verticalAlign: 'bottom'
+        }
+    },
+
+    colorAxis: {
+        min: 0
+    },
+
+    series: [{
+        data: data,
+        name: 'Random data',
+        states: {
+            hover: {
+                color: '#BADA55'
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            format: '{point.name}'
+        }
+    }]
+});
+
+
+}
 function load_map( hot_map ){
     Highcharts.mapChart('container', {
 
@@ -74,8 +139,6 @@ function load_map( hot_map ){
             }
         }]
     });
-
-
 }
 
 function load_csv(){
@@ -84,11 +147,13 @@ function load_csv(){
     d3.csv(URL_CONFIRMED_CASES),
     d3.csv(URL_DEATHS_CASES),
     d3.csv(URL_RECOVERED_CASES),
-    d3.json(URL_COUNTRIES)
+    d3.json(URL_COUNTRIES),
+    //d3.csv('./src/data/Casos1.csv')
   ]).then(function(files) {
-    logic = new World(files[0], files[1], files[2], files[3]);
+    logic = new World( files[0], files[1], files[2], files[3] );
 
     load_map(logic.hot_map);
+     //load_map_co( files[4] );
     load_list(logic.countries);
   }).catch(function(err) {
   })

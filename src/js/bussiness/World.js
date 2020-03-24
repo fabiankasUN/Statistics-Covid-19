@@ -1,10 +1,9 @@
-
 import { Country } from './Country.js';
 
 
 export class World{
 
-    constructor(confirmed, deaths, recovered, json_countries){
+    constructor(confirmed, deaths, recovered, json_countries ){
         this.countries = [];
         this.map_countries = {};
         this.map_countries_s = {};
@@ -27,6 +26,10 @@ export class World{
       }
 
 
+    load_data_co(){
+
+    }
+
     load_json_data( json ){
 
       this.map_countries['United States'] = this.map_countries['US'];
@@ -36,7 +39,6 @@ export class World{
       this.map_countries['Egypt, Arab Rep.'] = this.map_countries['Egypt'];
       this.map_countries['Russian Federation'] = this.map_countries['Russia'];
 
-      
 
       for( var i= 0; i < json.length; i++ ){
         var cur = json[i];
@@ -53,6 +55,9 @@ export class World{
             console.log(cur.name);
           }
         }
+
+        if( json[i].value <= 0 )
+          json[i].value = 1;
       }
       return json;
     }
@@ -81,7 +86,7 @@ export class World{
           if( this.map_countries[c.name] == undefined )
             this.map_countries[c.name] = 0
           this.map_countries[c.name] += +c.cases[c.cases.length-1].value;
-          this.map_countries_s[c.province] = c.cases[c.cases.length-1].value;
+          this.map_countries_s[c.province] = +c.cases[c.cases.length-1].value;
           this.countries.push(c);
 
 
