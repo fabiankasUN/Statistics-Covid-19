@@ -52,7 +52,7 @@ export class World{
           }else{
             cur.value = 1;
             json[i] = cur;
-            console.log(cur.name);
+            //console.log(cur.name);
           }
         }
 

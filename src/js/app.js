@@ -22,8 +22,10 @@ const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID
 const URL_RECOVERED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
 const URL_COUNTRIES = "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json";
 
-var COL_KEYS = [['co-ca','Cauca'],['co-na','Nariño'],['co-ch','Chocó'],['co-3653','null'],['co-to','Tolima'],['co-cq','Caquetá'],['co-hu','Huila'],['co-pu','Putumayo'],['co-am','Amazonas'],['co-bl','Bolívar'],['co-vc','Valle del Cauca'],['co-su','Sucre'],['co-at','Atlántico'],['co-ce','Cesar'],['co-lg','La Guajira'],['co-ma','Magdalena'],['co-ar','Arauca'],['co-ns','Norte de Santander'],['co-cs','Casanare'],['co-gv','Guaviare'],['co-me','Meta'],['co-vp','Vaupés'],['co-vd','Vichada'],['co-an','Antioquia'],['co-co','Córdoba'],['co-by','Boyacá'],['co-st','Santander'],['co-cl','Caldas'],['co-cu','Cundinamarca'],['co-1136','Bogotá'],['co-ri','Risaralda'],['co-qd','Quindío'],['co-gn','Guainía']];
+//var COL_KEYS = [['co-ca','Cauca'],['co-na','Nariño'],['co-ch','Choco'],['co-3653','null'],['co-to','Tolima'],['co-cq','Caqueta'],['co-hu','Huila'],['co-pu','Putumayo'],['co-am','Amazonas'],['co-bl','Bolivar'],['co-vc','Valle del Cauca'],['co-su','Sucre'],['co-at','Atlantico'],['co-ce','Cesar'],['co-lg','La Guajira'],['co-ma','Magdalena'],['co-ar','Arauca'],['co-ns','Norte de Santander'],['co-cs','Casanare'],['co-gv','Guaviare'],['co-me','Meta'],['co-vp','Vaupes'],['co-vd','Vichada'],['co-an','Antioquia'],['co-co','Cordoba'],['co-by','Boyaca'],['co-st','Santander'],['co-cl','Caldas'],['co-cu','Cundinamarca'],['co-1136','Bogota'],['co-ri','Risaralda'],['co-qd','Quindio'],['co-gn','Guainia']];
 
+var col_data;
+var keys;
 
 var logic;
 var json_countries;
@@ -40,24 +42,34 @@ window.onload=function() {
   
 } 
 
-function load_map_co( col_data ){
+function load_map_co( col_data, keys ){
 
+  var map_departments = {};
+  var array_keys = {}
   var data = [];
 
-  for( var i = 0; i < COL_KEYS.length; i++ ){
-    var name = COL_KEYS[i][1];
-    var count = 0;
-    for( var j =0; j < col_data.length; j++ ){
-      var dep = col_data[j]['Ciudad de ubicación'];
-      if(dep == name ){
-        console.log(dep + ' ' + name);
-        count += 1
-      }
-    }
-    data.push([COL_KEYS[i][0],count]);
+  for( var i = 0; i < keys.length; i++ ){
+    var cur = keys[i];
+    map_departments[cur['Nombre Municipio']] = cur['Key'];
   }
 
-  console.log('data ' + data);
+  for( var j =0; j < col_data.length; j++ ){
+    var dep = col_data[j]['Ciudad de ubicación'];
+    dep = dep.replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u').toUpperCase();
+    if( map_departments[dep] != undefined ){
+      var key = map_departments[dep];
+      if( array_keys[key] == undefined )
+        array_keys[key] = 0;
+
+      array_keys[key]++;
+    }else{
+      console.log(dep);
+    }
+  }
+  array_keys['co-cu'] = array_keys['co-1136'] + array_keys['co-cu'];
+  for (var m in array_keys){
+    data.push([m, array_keys[m]]);
+  }
 
   Highcharts.mapChart('container2', {
     chart: {
@@ -65,7 +77,7 @@ function load_map_co( col_data ){
     },
 
     title: {
-        text: 'Highmaps basic demo'
+        text: 'Casos Colombia por departamento'
     },
 
     subtitle: {
@@ -80,12 +92,16 @@ function load_map_co( col_data ){
     },
 
     colorAxis: {
-        min: 0
+        min: 0,
+        //type: 'logarithmic',
+        minColor: '#efecf3',
+        maxColor: '#990041',
+        lineWidth: 10
     },
 
     series: [{
         data: data,
-        name: 'Random data',
+        name: 'Casos Confirmados',
         states: {
             hover: {
                 color: '#BADA55'
@@ -97,9 +113,8 @@ function load_map_co( col_data ){
         }
     }]
 });
-
-
 }
+
 function load_map( hot_map ){
     Highcharts.mapChart('container', {
 
@@ -115,7 +130,7 @@ function load_map( hot_map ){
 
         colorAxis: {
             min: 1,
-            max: 100000,
+            max: 200000,
             type: 'logarithmic',
             minColor: '#efecf3',
             maxColor: '#990041',
@@ -141,6 +156,34 @@ function load_map( hot_map ){
     });
 }
 
+function convert( csv_data ){
+
+  let csvContent = "";
+
+  var rows = [["Codigo Departamento",'Nombre Departamento','Codigo Municipio', 'Nombre Municipio','Key']];
+  for( var i = 0; i < csv_data.length; i++ ){
+    var cur = csv_data[i];
+    for( var j = 0; j < COL_KEYS.length; j++ ){
+      if( cur['Nombre Departamento'] == COL_KEYS[j][1].toUpperCase() ){
+        cur['key'] = COL_KEYS[j][0]
+      }
+    }
+    rows.push([cur["Código Departamento"],cur['Nombre Departamento'],cur["Código Municipio"],cur["Nombre Municipio"],cur['key'] ]);
+  }
+
+  rows.forEach(function(rowArray) {
+      let row = rowArray.join(";");
+      csvContent += row + "\r\n";
+  });
+  var pom = document.createElement('a');
+   
+  var blob = new Blob([csvContent],{type: 'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  pom.href = url;
+  pom.setAttribute('download', 'foo.csv');
+  pom.click();
+}
+
 function load_csv(){
 
   Promise.all([
@@ -148,12 +191,13 @@ function load_csv(){
     d3.csv(URL_DEATHS_CASES),
     d3.csv(URL_RECOVERED_CASES),
     d3.json(URL_COUNTRIES),
-    //d3.csv('./src/data/Casos1.csv')
+    d3.csv('./src/data/Casos1.csv'),
+    d3.csv('./src/data/dep_col.csv')
   ]).then(function(files) {
     logic = new World( files[0], files[1], files[2], files[3] );
-
+    col_data = files[4];
+    keys = files[5];
     load_map(logic.hot_map);
-     //load_map_co( files[4] );
     load_list(logic.countries);
   }).catch(function(err) {
   })
@@ -178,14 +222,20 @@ function load_buttons(){
 
 
 function update_plot(){
-
+  document.getElementById("col_plot").style.display = "none";
   if(right_list.childNodes.length === 0)
     return;
-    
+  
   var countries = []
   for( var i = 1; i < right_list.childNodes.length; i++ ){
     var value = right_list.childNodes[i].value;
     countries.push(logic.countries[value]);
+
+    if( logic.countries[value].name == 'Colombia' ){
+      document.getElementById("col_plot").style.display = "inline";
+      load_map_co(col_data, keys);
+      
+    }
   }
   
    
