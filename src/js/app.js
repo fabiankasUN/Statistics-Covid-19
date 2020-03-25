@@ -17,8 +17,8 @@ import { ComparatorChart } from './charts/ComparatorChart';
 //require('highcharts/modules/exporting')(Highcharts);   
 
 
-const URL_CONFIRMED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
-const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
+const URL_CONFIRMED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
+const URL_DEATHS_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
 const URL_RECOVERED_CASES = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
 const URL_COUNTRIES = "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json";
 
@@ -156,34 +156,6 @@ function load_map( hot_map ){
     });
 }
 
-function convert( csv_data ){
-
-  let csvContent = "";
-
-  var rows = [["Codigo Departamento",'Nombre Departamento','Codigo Municipio', 'Nombre Municipio','Key']];
-  for( var i = 0; i < csv_data.length; i++ ){
-    var cur = csv_data[i];
-    for( var j = 0; j < COL_KEYS.length; j++ ){
-      if( cur['Nombre Departamento'] == COL_KEYS[j][1].toUpperCase() ){
-        cur['key'] = COL_KEYS[j][0]
-      }
-    }
-    rows.push([cur["Código Departamento"],cur['Nombre Departamento'],cur["Código Municipio"],cur["Nombre Municipio"],cur['key'] ]);
-  }
-
-  rows.forEach(function(rowArray) {
-      let row = rowArray.join(";");
-      csvContent += row + "\r\n";
-  });
-  var pom = document.createElement('a');
-   
-  var blob = new Blob([csvContent],{type: 'text/csv;charset=utf-8;'});
-  var url = URL.createObjectURL(blob);
-  pom.href = url;
-  pom.setAttribute('download', 'foo.csv');
-  pom.click();
-}
-
 function load_csv(){
 
   Promise.all([
@@ -258,13 +230,13 @@ function update_plot(){
 
   info_list.push(g1);
   info_list.push(g2);
-  info_list.push(g3);
+  //info_list.push(g3);
   info_list.push(g4);
   info_list.push(g5);
 
   for( var  i =0; i < countries.length; i++ ){
     info_list.push(new CountryChart( countries, countries[i] ).getData('line', 'Fecha por dia', '# casos ' + countries[i].name, 'col-md-' + size
-    , 'Cantidad de casos confirmados, muertes y recuperados ' + countries[i].name));
+    , 'Cantidad de casos confirmados y muertes ' + countries[i].name));
   }
 
   //for( var i = 0; i < countries.length; i++ ){

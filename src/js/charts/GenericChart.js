@@ -81,7 +81,7 @@ export class GenericChart{
 
         this.start_day = this.getMinValueGreater( value_type );
         var x_axis = this.getXaxis( value_type );
-
+      
         for( var i =0; i < this.countries.length; i++ ){
           let country = this.countries[i];
           labels.push(country.name + ' ' + country.province);
