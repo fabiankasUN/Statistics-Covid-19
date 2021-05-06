@@ -17,7 +17,7 @@
     "d3-fetch": "^1.1.2",
     "express": "^4.17.1",
     "express-favicon": "^2.0.1",
-    "highcharts": "^8.0.4",
+    "highcharts": "^9.0.0",
     "npm-watch": "^0.6.0",
     "path": "^0.12.7",
     "react": "^16.13.1",
